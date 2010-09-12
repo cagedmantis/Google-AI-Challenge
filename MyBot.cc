@@ -13,7 +13,7 @@
 // http://www.ai-contest.com/resources.
 void DoTurn(const PlanetWars& pw) {
   // (1) If we currently have a fleet in flight, just do nothing.
-  if (pw.MyFleets().size() >= 1) {
+  if (pw.MyFleets().size() >= 2) { // Changed from 1 to 2
     return;
   }
   // (2) Find my strongest planet.
@@ -23,7 +23,7 @@ void DoTurn(const PlanetWars& pw) {
   std::vector<Planet> my_planets = pw.MyPlanets();
   for (int i = 0; i < my_planets.size(); ++i) {
     const Planet& p = my_planets[i];
-    double score = (double)p.NumShips();
+    double score = (double)p.NumShips() / (1 + p.GrowthRate());
     if (score > source_score) {
       source_score = score;
       source = p.PlanetID();
@@ -36,7 +36,7 @@ void DoTurn(const PlanetWars& pw) {
   std::vector<Planet> not_my_planets = pw.NotMyPlanets();
   for (int i = 0; i < not_my_planets.size(); ++i) {
     const Planet& p = not_my_planets[i];
-    double score = 1.0 / (1 + p.NumShips());
+    double score = (double)(1 + p.GrowthRate()) / p.NumShips();
     if (score > dest_score) {
       dest_score = score;
       dest = p.PlanetID();
