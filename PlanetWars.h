@@ -157,6 +157,12 @@ class PlanetWars {
   // player. This includes all enemy planets and neutral planets.
   std::vector<Planet> NotMyPlanets() const;
 
+  // Return a count of my growth rate.
+  int MyProduction() const;
+
+  // Return a count of the enemy growth rate.
+  int EnemyProduction() const;
+
   // Return a list of all the fleets.
   std::vector<Fleet> Fleets() const;
 

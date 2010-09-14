@@ -190,6 +190,24 @@ std::vector<Planet> PlanetWars::NotMyPlanets() const {
   return r;
 }
 
+int PlanetWars::MyProduction() const {
+  int rate = 0;
+  std::vector<Planet> planets = PlanetWars::MyPlanets();
+  for (int i = 0; i < planets.size(); ++i) {
+    rate += planets[i].GrowthRate();
+  }
+  return rate;
+}
+
+int PlanetWars::EnemyProduction() const {
+  int rate = 0;
+  std::vector<Planet> planets = PlanetWars::EnemyPlanets();
+  for (int i = 0; i < planets.size(); ++i) {
+    rate += planets[i].GrowthRate();
+  }
+  return rate;
+}
+
 std::vector<Fleet> PlanetWars::Fleets() const {
   std::vector<Fleet> r;
   for (int i = 0; i < fleets_.size(); ++i) {

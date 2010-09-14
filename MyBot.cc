@@ -12,10 +12,21 @@
 // own. Check out the tutorials and articles on the contest website at
 // http://www.ai-contest.com/resources.
 void DoTurn(const PlanetWars& pw) {
+
+  // Checks to see which player has a higher growth rate.
+  // Sets the growth rate accordingly.
+  int numFleets;
+  if (pw.MyProduction() >= pw.EnemyProduction()) {
+    numFleets = 10;
+  } else {
+    numFleets = 20;
+  }
+
   // (1) If we currently have a fleet in flight, just do nothing.
-  if (pw.MyFleets().size() >= 2) { // Changed from 1 to 2
+  if (pw.MyFleets().size() >= numFleets) { // Changed from 2 to 20
     return;
   }
+
   // (2) Find my strongest planet.
   int source = -1;
   double source_score = -999999.0;
