@@ -55,11 +55,25 @@ void DoTurn(const PlanetWars& pw) {
   }
   // (4) Send half the ships from my strongest planet to the weakest
   // planet that I do not own.
-  if (source >= 0 && dest >= 0) {
-    int num_ships = source_num_ships / 2;
-    pw.IssueOrder(source, dest, num_ships);
+  //if (source >= 0 && dest >= 0) {
+  //  int num_ships = source_num_ships / 2;
+  //  pw.IssueOrder(source, dest, num_ships);
+  //}
+  
+  // (4) Half is such a crude number. Let's try sending one more than what the planet currently has.
+  if (source >= 0 && dest >= 0 ) {
+    int num_ships = pw.GetPlanet(dest).NumShips() + 1;
+    if (source_num_ships < num_ships) {
+      pw.IssueOrder(source, dest, num_ships);
+    }
   }
+
 }
+
+
+
+
+
 
 // This is just the main game loop that takes care of communicating with the
 // game engine for you. You don't have to understand or change the code below.
