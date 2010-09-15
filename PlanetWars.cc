@@ -93,6 +93,14 @@ int Planet::GrowthRate() const {
   return growth_rate_;
 }
 
+bool Planet::compareByGrowth(Planet lhs, Planet rhs) const {
+  return (lhs.growth_rate_ < rhs.growth_rate_);
+}
+
+bool Planet::compareByNumShips(Planet lhs, Planet rhs) const {
+  return (lhs.num_ships_ < rhs.num_ships_);
+}
+
 double Planet::X() const {
   return x_;
 }

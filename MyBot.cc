@@ -1,5 +1,11 @@
 #include <iostream>
 #include "PlanetWars.h"
+#include <map>
+
+bool cmpPlanet (Planet lhp, Planet rhp) {
+  return (lhp.NumShips() < rhp.NumShips());
+}
+
 
 // The DoTurn function is where your code goes. The PlanetWars object contains
 // the state of the game, including information about all planets and fleets
@@ -13,6 +19,8 @@
 // http://www.ai-contest.com/resources.
 void DoTurn(const PlanetWars& pw) {
 
+
+  /*
   // Checks to see which player has a higher growth rate.
   // Sets the growth rate accordingly.
   int numFleets;
@@ -64,10 +72,62 @@ void DoTurn(const PlanetWars& pw) {
   if (source >= 0 && dest >= 0 ) {
     int num_ships = pw.GetPlanet(dest).NumShips() + 1;
     if (source_num_ships < num_ships) {
-      pw.IssueOrder(source, dest, num_ships);
+      pw.IssueOrder(soucre, dest, num_ships);
     }
   }
+  
+  */
 
+  //***********************************
+  //** New Approach
+  //***********************************
+  
+
+  //  bool cmpPlanet (Planet lhp, Planet rhp) {
+  //  return (lhp.NumShips() < rhp.NumShips());
+  //}
+
+  // Contains fleets which have been newly created.
+  // std::vector<Fleet> active_fleets;
+
+  // Contains my planets.
+  std::vector<Planet> my_planets = pw.MyPlanets();
+
+  // Contains enemy planets.
+  std::vector<Planet> not_my_planets = pw.NotMyPlanets();
+  
+  // Sort My Planets 
+  std::sort(my_planets.begin(), my_planets.end(), cmpPlanet);
+  
+  // Sort unclaimed / enemy planets by number of ships.
+  std::sort(not_my_planets.begin(), not_my_planets.end(), cmpPlanet);
+  
+  // Contains the minimum number of ships that should be on a planet.
+  int minShips = 10;
+
+  // Create a map to keep track of what fleet has been sent out.
+  std::map<int,int>  active_fleets;
+
+  // For each planet
+  for (int i=0; i < my_planets.size(); i++) {
+  
+    int available_ships = my_planets[i].NumShips() - minShips;
+    
+    if (available_ships > minShips) {
+      
+      for (int j=0; j < not_my_planets.size(); j++) {
+        
+        if ( (available_ships >= not_my_planets[j].NumShips())  && ( active_fleets.find( not_my_planets[j].PlanetID() ) != active_fleets.end() )) {
+          
+          available_ships-= not_my_planets[j].NumShips() + 1;
+          
+          active_fleets[ not_my_planets[j].PlanetID() ] = not_my_planets[j].NumShips()+1;
+          
+          pw.IssueOrder( my_planets[i].PlanetID(), not_my_planets[j].PlanetID(), not_my_planets[j].NumShips() +1);
+        }
+      } 
+    }
+  }
 }
 
 

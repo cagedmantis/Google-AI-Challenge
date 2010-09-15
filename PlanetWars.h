@@ -110,6 +110,9 @@ class Planet {
   void AddShips(int amount);
   void RemoveShips(int amount);
 
+  bool compareByGrowth(Planet lhs, Planet rhs) const;
+  bool compareByNumShips(Planet lhs, Planet rhs) const;
+
  private:
   int planet_id_;
   int owner_;
