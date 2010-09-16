@@ -1,6 +1,7 @@
 #include <iostream>
 #include "PlanetWars.h"
 #include <map>
+#include <algorithm>
 
 bool cmpPlanet (Planet lhp, Planet rhp) {
   return (lhp.NumShips() < rhp.NumShips());
@@ -117,14 +118,16 @@ void DoTurn(const PlanetWars& pw) {
       
       for (int j=0; j < not_my_planets.size(); j++) {
         
-        if ( (available_ships >= not_my_planets[j].NumShips())  && ( active_fleets.find( not_my_planets[j].PlanetID() ) != active_fleets.end() )) {
+        if ( (available_ships >= not_my_planets[j].NumShips()) ) { // && ( active_fleets.find( not_my_planets[j].PlanetID() ) != active_fleets.end() )) {
           
           available_ships-= not_my_planets[j].NumShips() + 1;
           
           active_fleets[ not_my_planets[j].PlanetID() ] = not_my_planets[j].NumShips()+1;
           
           pw.IssueOrder( my_planets[i].PlanetID(), not_my_planets[j].PlanetID(), not_my_planets[j].NumShips() +1);
-        }
+//std::cout << "Called once" << std::endl;
+
+	        }
       } 
     }
   }
