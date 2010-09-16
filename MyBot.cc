@@ -125,16 +125,12 @@ void DoTurn(const PlanetWars& pw) {
             active_fleets[ not_my_planets[j].PlanetID() ] = not_my_planets[j].NumShips()+2;
           
             pw.IssueOrder( my_planets[i].PlanetID(), not_my_planets[j].PlanetID(), not_my_planets[j].NumShips() +2);
-            //std::cout << "Called once" << std::endl;
           }
         }
       } 
     }
   }
 }
-
-
-
 
 
 
