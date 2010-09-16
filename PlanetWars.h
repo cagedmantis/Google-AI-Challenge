@@ -172,6 +172,9 @@ class PlanetWars {
   // Return a list of all the fleets owned by the current player.
   std::vector<Fleet> MyFleets() const;
 
+  // Return a count of fleets headed toward a destination planet.
+  int MyFleetByDestCount(int planet_id) const;
+
   // Return a list of all the fleets owned by enemy players.
   std::vector<Fleet> EnemyFleets() const;
 

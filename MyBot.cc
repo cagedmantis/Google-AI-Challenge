@@ -118,16 +118,16 @@ void DoTurn(const PlanetWars& pw) {
       
       for (int j=0; j < not_my_planets.size(); j++) {
         
-        if ( (available_ships >= not_my_planets[j].NumShips()) ) { // && ( active_fleets.find( not_my_planets[j].PlanetID() ) != active_fleets.end() )) {
+        if ( (available_ships >= not_my_planets[j].NumShips()) && ( active_fleets.find( not_my_planets[j].PlanetID() ) == active_fleets.end() )) {
+          if ( pw.MyFleetByDestCount(not_my_planets[j].PlanetID()) == 0 ) {
+            available_ships-= not_my_planets[j].NumShips() + 2;
           
-          available_ships-= not_my_planets[j].NumShips() + 1;
+            active_fleets[ not_my_planets[j].PlanetID() ] = not_my_planets[j].NumShips()+2;
           
-          active_fleets[ not_my_planets[j].PlanetID() ] = not_my_planets[j].NumShips()+1;
-          
-          pw.IssueOrder( my_planets[i].PlanetID(), not_my_planets[j].PlanetID(), not_my_planets[j].NumShips() +1);
-//std::cout << "Called once" << std::endl;
-
-	        }
+            pw.IssueOrder( my_planets[i].PlanetID(), not_my_planets[j].PlanetID(), not_my_planets[j].NumShips() +2);
+            //std::cout << "Called once" << std::endl;
+          }
+        }
       } 
     }
   }

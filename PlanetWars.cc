@@ -236,6 +236,20 @@ std::vector<Fleet> PlanetWars::MyFleets() const {
   return r;
 }
 
+// Return a count of fleets headed toward a destination planet.
+
+int PlanetWars::MyFleetByDestCount(int planet_id) const {
+  std::vector<Fleet> r = MyFleets();
+  int count=0;
+  for (int i = 0; i < r.size(); ++i) {
+    if ( r[i].DestinationPlanet() == planet_id )
+      count+=1;
+  }
+  return count;
+}
+
+
+
 std::vector<Fleet> PlanetWars::EnemyFleets() const {
   std::vector<Fleet> r;
   for (int i = 0; i < fleets_.size(); ++i) {
