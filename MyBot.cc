@@ -103,6 +103,9 @@ void DoTurn(const PlanetWars& pw) {
   // Sort unclaimed / enemy planets by number of ships.
   std::sort(not_my_planets.begin(), not_my_planets.end(), cmpPlanet);
   
+  // Contains my fleets;
+  std::vector<Fleet> my_fleets = pw.MyFleets();
+
   // Contains the minimum number of ships that should be on a planet.
   int minShips = 10;
 
@@ -114,24 +117,52 @@ void DoTurn(const PlanetWars& pw) {
   
     int available_ships = my_planets[i].NumShips() - minShips;
     
+    // Do I have enough ships available?
     if (available_ships > minShips) {
       
+      // 
       for (int j=0; j < not_my_planets.size(); j++) {
-        
-        if ( (available_ships >= not_my_planets[j].NumShips()) && ( active_fleets.find( not_my_planets[j].PlanetID() ) == active_fleets.end() )) {
-          if ( pw.MyFleetByDestCount(not_my_planets[j].PlanetID()) == 0 ) {
-            available_ships-= not_my_planets[j].NumShips() + 2;
+        if ( (available_ships >= not_my_planets[j].NumShips()) ) {
+          if ( active_fleets.find( not_my_planets[j].PlanetID() )  == active_fleets.end() ) {
+
+            // is this an ememy planet?
+            if ( not_my_planets[j].Owner() == 2 ) {
+              int currentFleets =  pw.MyFleetByDestCount(not_my_planets[j].PlanetID());
+              
+              // Do I have any fleets headed there?
+              if ( currentFleets > 0 ) {
+                for (int k = 0; k < my_fleets.size(); ++k) {
+                  if (my_fleets[k].DestinationPlanet() == not_my_planets[j].PlanetID() ) {
+                    int fleet_delta = not_my_planets[j].NumShips() + (not_my_planets[j].GrowthRate() * my_fleets[k].TurnsRemaining()) + 2;
+                    if ( fleet_delta > my_fleets[k].NumShips() ) {
+                      int additional_fleet = (fleet_delta - my_fleets[k].NumShips()) + (not_my_planets[j].GrowthRate() * pw.Distance( my_planets[i].PlanetID(), not_my_planets[j].PlanetID() ) + 2);
+                      if (available_ships > additional_fleet)
+                        pw.IssueOrder( my_planets[i].PlanetID(), not_my_planets[j].PlanetID(), additional_fleet);
+                    }
+                  }
+                }
+              } else {
+                int new_fleet_size = not_my_planets[j].GrowthRate() * pw.Distance( my_planets[i].PlanetID(), not_my_planets[j].PlanetID() ) + 2 + not_my_planets[j].NumShips();
+                if (available_ships > new_fleet_size) {
+                  active_fleets[ not_my_planets[j].PlanetID() ] = not_my_planets[j].NumShips()+2;
+                  pw.IssueOrder( my_planets[i].PlanetID(), not_my_planets[j].PlanetID(), new_fleet_size);
+                }
+              }
+            } else {
+              if ( pw.MyFleetByDestCount(not_my_planets[j].PlanetID()) == 0 ) {
+                available_ships-= not_my_planets[j].NumShips() + 2;
           
-            active_fleets[ not_my_planets[j].PlanetID() ] = not_my_planets[j].NumShips()+2;
-          
-            pw.IssueOrder( my_planets[i].PlanetID(), not_my_planets[j].PlanetID(), not_my_planets[j].NumShips() +2);
-          }
+                active_fleets[ not_my_planets[j].PlanetID() ] = not_my_planets[j].NumShips()+2;
+                
+                pw.IssueOrder( my_planets[i].PlanetID(), not_my_planets[j].PlanetID(), not_my_planets[j].NumShips() +2);
+              }
+            }
+          } 
         }
-      } 
+      }
     }
   }
 }
-
 
 
 // This is just the main game loop that takes care of communicating with the

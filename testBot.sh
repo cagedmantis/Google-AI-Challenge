@@ -12,7 +12,7 @@ cd ../testing_ai
 make clean
 make
 
-~/bin/jdk_6_0_20/bin/java -jar ../Google-AI-Challenge/tools/PlayGame.jar ../Google-AI-Challenge/maps/map7.txt 1000 1000 log.txt "java -jar ../Google-AI-Challenge/example_bots/RandomBot.jar" "./MyBot" | java -jar ../Google-AI-Challenge/tools/ShowGame.jar
+java -jar ../Google-AI-Challenge/tools/PlayGame.jar ../Google-AI-Challenge/maps/map7.txt 1000 150 log.txt "java -jar ../Google-AI-Challenge/example_bots/RandomBot.jar" "./MyBot" | java -jar ../Google-AI-Challenge/tools/ShowGame.jar
 
 
 
