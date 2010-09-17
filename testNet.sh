@@ -6,6 +6,7 @@ mkdir ../testing_ai_net
 cp *.cc ../testing_ai_net
 cp *.h ../testing_ai_net
 cp Makefile ../testing_ai_net
+cp *.c ../testing_ai_net
 
 cd ../testing_ai_net
 
