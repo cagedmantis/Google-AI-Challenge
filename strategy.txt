@@ -1,0 +1,24 @@
+
+
+
+You must know:
+a. Your total shipcount
+b. Ships enroute
+c. Average shipcount per planet
+d. Planetcount (you/neurtal/enemy)
+
+Calculate how rewarding it is to invade a planet. Things you should take in account are:
+
+a. How far is it
+b. How many ships does it have
+c. Are you on the winning or loosing hand
+d. Is it close to an enemy planet
+e. Do you have ships enough to invade. There is no use of attacking a planet that is stronger than you
+
+Simulate an attack outcome
+
+Simulate growth
+
+ExpectedPlanetState
+
+
