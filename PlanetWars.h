@@ -91,6 +91,7 @@ class Planet {
 
   // The number of ships on the planet. This is the "population" of the planet.
   int NumShips() const;
+  void SetNumShips(int new_num_ships);
 
   // Returns the growth rate of the planet. Unless the planet is neutral, the
   // population of the planet grows by this amount each turn. The higher this
@@ -109,6 +110,9 @@ class Planet {
   void NumShips(int new_num_ships);
   void AddShips(int amount);
   void RemoveShips(int amount);
+
+  bool compareByGrowth(Planet lhs, Planet rhs) const;
+  bool compareByNumShips(Planet lhs, Planet rhs) const;
 
  private:
   int planet_id_;
@@ -157,14 +161,28 @@ class PlanetWars {
   // player. This includes all enemy planets and neutral planets.
   std::vector<Planet> NotMyPlanets() const;
 
+  // Return a count of my growth rate.
+  int MyProduction() const;
+
+  // Return a count of the enemy growth rate.
+  int EnemyProduction() const;
+
   // Return a list of all the fleets.
   std::vector<Fleet> Fleets() const;
 
   // Return a list of all the fleets owned by the current player.
   std::vector<Fleet> MyFleets() const;
 
+  // Return a count of fleets headed toward a destination planet.
+  int MyFleetByDestCount(int planet_id) const;
+
   // Return a list of all the fleets owned by enemy players.
   std::vector<Fleet> EnemyFleets() const;
+
+
+  std::vector<Fleet> EnemyFleetsByPlanet(int planet_id) const;
+
+  int EnemyFleetByDestCount(int planet_id) const;
 
   // Writes a string which represents the current game state. This string
   // conforms to the Point-in-Time format from the project Wiki.

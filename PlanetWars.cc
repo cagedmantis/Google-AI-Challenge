@@ -89,8 +89,20 @@ int Planet::NumShips() const {
   return num_ships_;
 }
 
+void Planet::SetNumShips(int new_num_ships) {
+  num_ships_ = new_num_ships;
+}
+
 int Planet::GrowthRate() const {
   return growth_rate_;
+}
+
+bool Planet::compareByGrowth(Planet lhs, Planet rhs) const {
+  return (lhs.growth_rate_ < rhs.growth_rate_);
+}
+
+bool Planet::compareByNumShips(Planet lhs, Planet rhs) const {
+  return (lhs.num_ships_ < rhs.num_ships_);
 }
 
 double Planet::X() const {
@@ -190,6 +202,24 @@ std::vector<Planet> PlanetWars::NotMyPlanets() const {
   return r;
 }
 
+int PlanetWars::MyProduction() const {
+  int rate = 0;
+  std::vector<Planet> planets = PlanetWars::MyPlanets();
+  for (int i = 0; i < planets.size(); ++i) {
+    rate += planets[i].GrowthRate();
+  }
+  return rate;
+}
+
+int PlanetWars::EnemyProduction() const {
+  int rate = 0;
+  std::vector<Planet> planets = PlanetWars::EnemyPlanets();
+  for (int i = 0; i < planets.size(); ++i) {
+    rate += planets[i].GrowthRate();
+  }
+  return rate;
+}
+
 std::vector<Fleet> PlanetWars::Fleets() const {
   std::vector<Fleet> r;
   for (int i = 0; i < fleets_.size(); ++i) {
@@ -210,6 +240,20 @@ std::vector<Fleet> PlanetWars::MyFleets() const {
   return r;
 }
 
+// Return a count of fleets headed toward a destination planet.
+
+int PlanetWars::MyFleetByDestCount(int planet_id) const {
+  std::vector<Fleet> r = MyFleets();
+  int count=0;
+  for (int i = 0; i < r.size(); ++i) {
+    if ( r[i].DestinationPlanet() == planet_id )
+      count+=1;
+  }
+  return count;
+}
+
+
+
 std::vector<Fleet> PlanetWars::EnemyFleets() const {
   std::vector<Fleet> r;
   for (int i = 0; i < fleets_.size(); ++i) {
@@ -220,6 +264,30 @@ std::vector<Fleet> PlanetWars::EnemyFleets() const {
   }
   return r;
 }
+
+std::vector<Fleet> PlanetWars::EnemyFleetsByPlanet(int planet_id) const {
+  std::vector<Fleet> e = EnemyFleets();
+  std::vector<Fleet> r;
+  for (int i = 0; i < e.size(); ++i) {
+    if ( e[i].DestinationPlanet() == planet_id) {
+      r.push_back(e[i]);
+    }
+    return r;
+  }
+}
+
+
+int PlanetWars::EnemyFleetByDestCount(int planet_id) const {                                                                                                                    
+  std::vector<Fleet> r = EnemyFleets();                                                                                                                                        
+  int count=0;                                                                                                                                                                  
+  for (int i = 0; i < r.size(); ++i) {                                                                                                                                          
+    if ( r[i].DestinationPlanet() == planet_id ) 
+      count+=1;                                                                                                                                                
+  }                                                                                                                                                                            
+  return count;                                                                                                                                                                
+}   
+  
+
 
 std::string PlanetWars::ToString() const {
   std::stringstream s;
