@@ -265,6 +265,30 @@ std::vector<Fleet> PlanetWars::EnemyFleets() const {
   return r;
 }
 
+std::vector<Fleet> PlanetWars::EnemyFleetsByPlanet(int planet_id) const {
+  std::vector<Fleet> e = EnemyFleets();
+  std::vector<Fleet> r;
+  for (int i = 0; i < e.size(); ++i) {
+    if ( e[i].DestinationPlanet() == planet_id) {
+      r.push_back(e[i]);
+    }
+    return r;
+  }
+}
+
+
+int PlanetWars::EnemyFleetByDestCount(int planet_id) const {                                                                                                                    
+  std::vector<Fleet> r = EnemyFleets();                                                                                                                                        
+  int count=0;                                                                                                                                                                  
+  for (int i = 0; i < r.size(); ++i) {                                                                                                                                          
+    if ( r[i].DestinationPlanet() == planet_id ) 
+      count+=1;                                                                                                                                                
+  }                                                                                                                                                                            
+  return count;                                                                                                                                                                
+}   
+  
+
+
 std::string PlanetWars::ToString() const {
   std::stringstream s;
   for (unsigned int i = 0; i < planets_.size(); ++i) {

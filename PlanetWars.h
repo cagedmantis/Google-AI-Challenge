@@ -179,6 +179,11 @@ class PlanetWars {
   // Return a list of all the fleets owned by enemy players.
   std::vector<Fleet> EnemyFleets() const;
 
+
+  std::vector<Fleet> EnemyFleetsByPlanet(int planet_id) const;
+
+  int EnemyFleetByDestCount(int planet_id) const;
+
   // Writes a string which represents the current game state. This string
   // conforms to the Point-in-Time format from the project Wiki.
   std::string ToString() const;

@@ -101,7 +101,23 @@ void DoTurn(const PlanetWars& pw) {
       }
     }
   }
+  
+  //Defense
+  for (int i = my_planets.size()-1; i >= 0; --i) {
+    int fleet_ship_count = pw.EnemyFleetByDestCount( my_planets[i].PlanetID() );
+    if ( fleet_ship_count > 0  &&  active_fleets.find( my_planets[i].PlanetID() )  == active_fleets.end() ) {
+      for (int j = 0; j < my_planets.size(); ++j) {
+        if ( (my_planets[i].NumShips() - fleet_ship_count) < 1 ) {
+          if ( (5 - my_planets[i].NumShips()) > my_planets[j].NumShips() ) {
+            active_fleets[ my_planets[i].PlanetID() ] = my_planets[j].NumShips();
+            pw.IssueOrder( my_planets[j].PlanetID(), my_planets[i].PlanetID(), (5 - my_planets[i].NumShips()) );
+          }
+        }
+      }
+    }
+  }
 }
+
 
 
 // This is just the main game loop that takes care of communicating with the
