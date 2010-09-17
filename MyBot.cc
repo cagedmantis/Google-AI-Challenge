@@ -84,6 +84,7 @@ void DoTurn(const PlanetWars& pw) {
                 if (available_ships > new_fleet_size) {
                   active_fleets[ not_my_planets[j].PlanetID() ] = not_my_planets[j].NumShips()+2;
                   pw.IssueOrder( my_planets[i].PlanetID(), not_my_planets[j].PlanetID(), new_fleet_size);
+                  my_planets[i].SetNumShips(my_planets[i].NumShips() - new_fleet_size);
                 }
               }
             } else {
