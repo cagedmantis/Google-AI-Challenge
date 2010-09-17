@@ -20,70 +20,6 @@ bool cmpPlanet (Planet lhp, Planet rhp) {
 // http://www.ai-contest.com/resources.
 void DoTurn(const PlanetWars& pw) {
 
-
-  /*
-  // Checks to see which player has a higher growth rate.
-  // Sets the growth rate accordingly.
-  int numFleets;
-  if (pw.MyProduction() >= pw.EnemyProduction()) {
-    numFleets = 10;
-  } else {
-    numFleets = 20;
-  }
-
-  // (1) If we currently have a fleet in flight, just do nothing.
-  if (pw.MyFleets().size() >= numFleets) { // Changed from 2 to 20
-    return;
-  }
-
-  // (2) Find my strongest planet.
-  int source = -1;
-  double source_score = -999999.0;
-  int source_num_ships = 0;
-  std::vector<Planet> my_planets = pw.MyPlanets();
-  for (int i = 0; i < my_planets.size(); ++i) {
-    const Planet& p = my_planets[i];
-    double score = (double)p.NumShips() / (1 + p.GrowthRate());
-    if (score > source_score) {
-      source_score = score;
-      source = p.PlanetID();
-      source_num_ships = p.NumShips();
-    }
-  }
-  // (3) Find the weakest enemy or neutral planet.
-  int dest = -1;
-  double dest_score = -999999.0;
-  std::vector<Planet> not_my_planets = pw.NotMyPlanets();
-  for (int i = 0; i < not_my_planets.size(); ++i) {
-    const Planet& p = not_my_planets[i];
-    double score = (double)(1 + p.GrowthRate()) / p.NumShips();
-    if (score > dest_score) {
-      dest_score = score;
-      dest = p.PlanetID();
-    }
-  }
-  // (4) Send half the ships from my strongest planet to the weakest
-  // planet that I do not own.
-  //if (source >= 0 && dest >= 0) {
-  //  int num_ships = source_num_ships / 2;
-  //  pw.IssueOrder(source, dest, num_ships);
-  //}
-  
-  // (4) Half is such a crude number. Let's try sending one more than what the planet currently has.
-  if (source >= 0 && dest >= 0 ) {
-    int num_ships = pw.GetPlanet(dest).NumShips() + 1;
-    if (source_num_ships < num_ships) {
-      pw.IssueOrder(soucre, dest, num_ships);
-    }
-  }
-  
-  */
-
-  //***********************************
-  //** New Approach
-  //***********************************
-  
-
   //  bool cmpPlanet (Planet lhp, Planet rhp) {
   //  return (lhp.NumShips() < rhp.NumShips());
   //}
@@ -138,6 +74,8 @@ void DoTurn(const PlanetWars& pw) {
                       int additional_fleet = (fleet_delta - my_fleets[k].NumShips()) + (not_my_planets[j].GrowthRate() * pw.Distance( my_planets[i].PlanetID(), not_my_planets[j].PlanetID() ) + 2);
                       if (available_ships > additional_fleet)
                         pw.IssueOrder( my_planets[i].PlanetID(), not_my_planets[j].PlanetID(), additional_fleet);
+                      // NEW
+                      my_planets[i].SetNumShips(my_planets[i].NumShips() - additional_fleet); // -= additional_fleet;
                     }
                   }
                 }

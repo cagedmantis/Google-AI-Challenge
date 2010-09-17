@@ -91,6 +91,7 @@ class Planet {
 
   // The number of ships on the planet. This is the "population" of the planet.
   int NumShips() const;
+  void SetNumShips(int new_num_ships);
 
   // Returns the growth rate of the planet. Unless the planet is neutral, the
   // population of the planet grows by this amount each turn. The higher this

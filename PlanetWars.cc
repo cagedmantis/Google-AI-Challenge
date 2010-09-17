@@ -89,6 +89,10 @@ int Planet::NumShips() const {
   return num_ships_;
 }
 
+void Planet::SetNumShips(int new_num_ships) {
+  num_ships_ = new_num_ships;
+}
+
 int Planet::GrowthRate() const {
   return growth_rate_;
 }
