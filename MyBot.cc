@@ -3,6 +3,35 @@
 #include <map>
 #include <algorithm>
 
+// FOR DEBUG
+#include <fstream>
+#include <string>
+#include <istream>
+#include <sstream>
+const bool DEBUG = false;
+
+// Logging function
+void Log(std::string output) {
+  if (DEBUG) {
+    std::ofstream myfile;
+    myfile.open ("mybot.log", std::ios::app);
+    myfile << output << std::endl;
+    myfile.close();
+  }
+}
+
+std::string intToString(int i)
+{
+  std::stringstream ss (std::stringstream::in | std::stringstream::out);
+  std::string s;
+  ss << i;
+  s = ss.str();
+  return s;
+}
+
+
+
+// Planet compare function
 bool cmpPlanet (Planet lhp, Planet rhp) {
   return (lhp.NumShips() < rhp.NumShips());
 }
@@ -19,13 +48,20 @@ bool cmpPlanet (Planet lhp, Planet rhp) {
 // own. Check out the tutorials and articles on the contest website at
 // http://www.ai-contest.com/resources.
 void DoTurn(const PlanetWars& pw) {
-
+  
+  Log("*************************************************");
+  
+  //PlanetWars p = pw;
+  
   //  bool cmpPlanet (Planet lhp, Planet rhp) {
   //  return (lhp.NumShips() < rhp.NumShips());
   //}
 
   // Contains fleets which have been newly created.
   // std::vector<Fleet> active_fleets;
+
+  Log("Production: " + intToString(pw.MyProduction()) + " - Enemy: " + intToString(pw.EnemyProduction()));
+  Log("Planet Count: " + intToString(pw.NumPlanets()));
 
   // Contains my planets.
   std::vector<Planet> my_planets = pw.MyPlanets();
@@ -43,79 +79,122 @@ void DoTurn(const PlanetWars& pw) {
   std::vector<Fleet> my_fleets = pw.MyFleets();
 
   // Contains the minimum number of ships that should be on a planet.
-  int minShips = 10;
+  int minShips = 5;
 
   // Create a map to keep track of what fleet has been sent out.
   std::map<int,int>  active_fleets;
 
+  Log("Checking all of my planets");
   // For each planet
   for (int i=0; i < my_planets.size(); i++) {
   
     int available_ships = my_planets[i].NumShips() - minShips;
+    //Log((std::string)my_planets[i].PlanetID());
+    Log("Planet: " + intToString(my_planets[i].PlanetID()) + " ShipCount: " + intToString(my_planets[i].NumShips()));
     
     // Do I have enough ships available?
-    if (available_ships > minShips) {
+    //if (available_ships > minShips) {
       
-      // 
-      for (int j=0; j < not_my_planets.size(); j++) {
-        if ( (available_ships >= not_my_planets[j].NumShips()) ) {
-          if ( active_fleets.find( not_my_planets[j].PlanetID() )  == active_fleets.end() ) {
 
-            // is this an ememy planet?
-            if ( not_my_planets[j].Owner() == 2 ) {
-              int currentFleets =  pw.MyFleetByDestCount(not_my_planets[j].PlanetID());
+
+
+    //*********************************************************************************
+      
+    
+    // Starting from the smallest planet
+    for (int j=0; j < not_my_planets.size(); j++) {
+
+      //available_ships = my_planets[i].NumShips() - minShips;
+
+      if ( (available_ships >= not_my_planets[j].NumShips()) ) {
+        // if there are no newly created fleets headed toward the open planet.
+        if ( active_fleets.count( not_my_planets[j].PlanetID() )  < 1) {
+
+          // is this an enemy planet?
+          if ( not_my_planets[j].Owner() == 2 ) {
+
+            // This is the count of how many ships I have travelling to the planet.
+            int currentFleets =  pw.MyFleetByDestCount(not_my_planets[j].PlanetID());
               
-              // Do I have any fleets headed there?
-              if ( currentFleets > 0 ) {
-                for (int k = 0; k < my_fleets.size(); ++k) {
+            // Do I have any fleets headed there?
+            if ( currentFleets > 0 ) {  
+              
+              // For each fleet that I have.
+              for (int k = 0; k < my_fleets.size(); ++k) {
+                // **** If there is a new fleet headed there.
+                if ( active_fleets.count( my_fleets[k].DestinationPlanet() ) <1) {
+                  // if the destination planet is the current attack planet.
                   if (my_fleets[k].DestinationPlanet() == not_my_planets[j].PlanetID() ) {
+                    // calculate how many ships are needed to overtake the planet.
                     int fleet_delta = not_my_planets[j].NumShips() + (not_my_planets[j].GrowthRate() * my_fleets[k].TurnsRemaining()) + 2;
+                    // if there is a suffiificiant number of ships enroute then calculate the needed delta.
                     if ( fleet_delta > my_fleets[k].NumShips() ) {
                       int additional_fleet = (fleet_delta - my_fleets[k].NumShips()) + (not_my_planets[j].GrowthRate() * pw.Distance( my_planets[i].PlanetID(), not_my_planets[j].PlanetID() ) + 2);
-                      if (available_ships > additional_fleet)
+                      if (available_ships > additional_fleet) {
+                        Log("Deploying 1");
                         pw.IssueOrder( my_planets[i].PlanetID(), not_my_planets[j].PlanetID(), additional_fleet);
-                      // NEW
-                      my_planets[i].SetNumShips(my_planets[i].NumShips() - additional_fleet); // -= additional_fleet;
+                        Log("Deploy  From: " + intToString( my_planets[i].PlanetID() ) + " To: " + intToString(not_my_planets[j].PlanetID()) + " Count: " + intToString(additional_fleet));
+                        active_fleets[ not_my_planets[j].PlanetID() ] = additional_fleet;
+                        my_planets[i].SetNumShips(my_planets[i].NumShips() - additional_fleet);
+                        available_ships = available_ships - additional_fleet;
+                      }
                     }
                   }
                 }
-              } else {
+              } 
+            } else {
+              if ( active_fleets.count( not_my_planets[j].PlanetID() )  <1) {
                 int new_fleet_size = not_my_planets[j].GrowthRate() * pw.Distance( my_planets[i].PlanetID(), not_my_planets[j].PlanetID() ) + 2 + not_my_planets[j].NumShips();
                 if (available_ships > new_fleet_size) {
                   active_fleets[ not_my_planets[j].PlanetID() ] = not_my_planets[j].NumShips()+2;
+                  Log("Deploying 2");
                   pw.IssueOrder( my_planets[i].PlanetID(), not_my_planets[j].PlanetID(), new_fleet_size);
                   my_planets[i].SetNumShips(my_planets[i].NumShips() - new_fleet_size);
+                  available_ships = available_ships - new_fleet_size;
+                  Log("Deploy - From: " + intToString(my_planets[i].PlanetID()) + " To: " + intToString(not_my_planets[j].PlanetID()) + " Count: " + intToString(new_fleet_size));
                 }
               }
-            } else {
+            }
+            // If this is not an enemy ship
+          } else {
+            Log("DEBUG: New fleet count: " + intToString(active_fleets.count( not_my_planets[j].PlanetID())) + " For planet: " + intToString( not_my_planets[j].PlanetID() ));
+            if ( active_fleets.count( not_my_planets[j].PlanetID() )  <1 ) {
               if ( pw.MyFleetByDestCount(not_my_planets[j].PlanetID()) == 0 ) {
-                available_ships-= not_my_planets[j].NumShips() + 2;
-          
-                active_fleets[ not_my_planets[j].PlanetID() ] = not_my_planets[j].NumShips()+2;
-                
-                pw.IssueOrder( my_planets[i].PlanetID(), not_my_planets[j].PlanetID(), not_my_planets[j].NumShips() +2);
+                if (available_ships >= not_my_planets[j].NumShips() + 2) {
+                  Log("Available ships: " + intToString(available_ships));
+                  available_ships = available_ships - (not_my_planets[j].NumShips() + 2);
+                  Log("Available ships: " + intToString(available_ships));
+                  active_fleets[ not_my_planets[j].PlanetID() ] = not_my_planets[j].NumShips()+2;
+                  Log("Deploying 3");
+                  pw.IssueOrder( my_planets[i].PlanetID(), not_my_planets[j].PlanetID(), not_my_planets[j].NumShips() +2);
+                  Log("Planet Count1: " + intToString(my_planets[i].NumShips()) + " Dest: " + intToString(not_my_planets[j].NumShips() + 2));
+                  my_planets[i].SetNumShips(my_planets[i].NumShips() - not_my_planets[j].NumShips() +2);
+                  Log("Planet Count2: " + intToString(my_planets[i].NumShips()));
+                  Log("Deploy - From: " + intToString(my_planets[i].PlanetID()) + " To: " + intToString(not_my_planets[j].PlanetID()) + " Count: " + intToString(not_my_planets[j].NumShips() + 2));
+                }
               }
             }
-          } 
-        }
+          }
+        } 
       }
     }
   }
-  
+  /*  
   //Defense
   for (int i = my_planets.size()-1; i >= 0; --i) {
-    int fleet_ship_count = pw.EnemyFleetByDestCount( my_planets[i].PlanetID() );
-    if ( fleet_ship_count > 0  &&  active_fleets.find( my_planets[i].PlanetID() )  == active_fleets.end() ) {
-      for (int j = 0; j < my_planets.size(); ++j) {
-        if ( (my_planets[i].NumShips() - fleet_ship_count) < 1 ) {
-          if ( (5 - my_planets[i].NumShips()) > my_planets[j].NumShips() ) {
-            active_fleets[ my_planets[i].PlanetID() ] = my_planets[j].NumShips();
-            pw.IssueOrder( my_planets[j].PlanetID(), my_planets[i].PlanetID(), (5 - my_planets[i].NumShips()) );
-          }
-        }
-      }
-    }
+  int fleet_ship_count = pw.EnemyFleetByDestCount( my_planets[i].PlanetID() );
+  if ( fleet_ship_count > 0  &&  active_fleets.find( my_planets[i].PlanetID() )  == active_fleets.end() ) {
+  for (int j = 0; j < my_planets.size(); ++j) {
+  if ( (my_planets[i].NumShips() - fleet_ship_count) < 1 ) {
+  if ( (5 - my_planets[i].NumShips()) > my_planets[j].NumShips() ) {
+  active_fleets[ my_planets[i].PlanetID() ] = my_planets[j].NumShips();
+  pw.IssueOrder( my_planets[j].PlanetID(), my_planets[i].PlanetID(), (5 - my_planets[i].NumShips()) );
   }
+  }
+  }
+  }
+  } */
+  Log("*************************************************");
 }
 
 
