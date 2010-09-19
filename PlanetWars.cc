@@ -247,7 +247,7 @@ int PlanetWars::MyFleetByDestCount(int planet_id) const {
   int count=0;
   for (int i = 0; i < r.size(); ++i) {
     if ( r[i].DestinationPlanet() == planet_id )
-      count+=1;
+      count+= r[i].NumShips();
   }
   return count;
 }
@@ -277,14 +277,14 @@ std::vector<Fleet> PlanetWars::EnemyFleetsByPlanet(int planet_id) const {
 }
 
 
-int PlanetWars::EnemyFleetByDestCount(int planet_id) const {                                                                                                                    
-  std::vector<Fleet> r = EnemyFleets();                                                                                                                                        
-  int count=0;                                                                                                                                                                  
-  for (int i = 0; i < r.size(); ++i) {                                                                                                                                          
-    if ( r[i].DestinationPlanet() == planet_id ) 
-      count+=1;                                                                                                                                                
-  }                                                                                                                                                                            
-  return count;                                                                                                                                                                
+int PlanetWars::EnemyFleetByDestCount(int planet_id) const {
+  std::vector<Fleet> r = EnemyFleets();
+  int count=0;
+  for (int i = 0; i < r.size(); ++i) {
+    if ( r[i].DestinationPlanet() == planet_id )
+      count+=r[i].NumShips();
+  }
+  return count;
 }   
   
 

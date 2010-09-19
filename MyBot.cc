@@ -8,7 +8,7 @@
 #include <string>
 #include <istream>
 #include <sstream>
-const bool DEBUG = false;
+const bool DEBUG = true;
 
 // Logging function
 void Log(std::string output) {
@@ -179,21 +179,28 @@ void DoTurn(const PlanetWars& pw) {
       }
     }
   }
-  /*  
+  Log("-----------------");
   //Defense
   for (int i = my_planets.size()-1; i >= 0; --i) {
-  int fleet_ship_count = pw.EnemyFleetByDestCount( my_planets[i].PlanetID() );
-  if ( fleet_ship_count > 0  &&  active_fleets.find( my_planets[i].PlanetID() )  == active_fleets.end() ) {
-  for (int j = 0; j < my_planets.size(); ++j) {
-  if ( (my_planets[i].NumShips() - fleet_ship_count) < 1 ) {
-  if ( (5 - my_planets[i].NumShips()) > my_planets[j].NumShips() ) {
-  active_fleets[ my_planets[i].PlanetID() ] = my_planets[j].NumShips();
-  pw.IssueOrder( my_planets[j].PlanetID(), my_planets[i].PlanetID(), (5 - my_planets[i].NumShips()) );
+    int available_ships = my_planets[i].NumShips() - minShips;
+    if (available_ships > 0 ) {
+    Log("Deploying 4");
+    Log("Available ships: " + intToString(available_ships));
+    int fleet_ship_count = pw.EnemyFleetByDestCount( my_planets[i].PlanetID() );
+    Log("Enemy fleet count: " + intToString(fleet_ship_count));
+    if ( fleet_ship_count > 0  &&  active_fleets.find( my_planets[i].PlanetID() )  == active_fleets.end() ) {
+      for (int j = 0; j < my_planets.size(); ++j) {
+        if ( (my_planets[i].NumShips() - fleet_ship_count) < 1 ) {
+          if ( (5 - my_planets[i].NumShips()) > my_planets[j].NumShips() ) {
+            active_fleets[ my_planets[i].PlanetID() ] = my_planets[j].NumShips();
+            pw.IssueOrder( my_planets[j].PlanetID(), my_planets[i].PlanetID(), (5 - my_planets[i].NumShips()) );
+            Log("Deploy - From: " + intToString( my_planets[j].PlanetID()) + " To: " + intToString( my_planets[i].PlanetID()) + " Count: " + intToString( 5 - my_planets[i].NumShips()));
+          }
+          }
+        }
+      }
+    }
   }
-  }
-  }
-  }
-  } */
   Log("*************************************************");
 }
 
