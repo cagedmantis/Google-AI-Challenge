@@ -1,5 +1,3 @@
-
-
 #ifndef SIMULATOR_H_
 #define SIMULATOR_H_
 
@@ -19,7 +17,7 @@ class Simulator {
   int MyShipCount() const;
   
   // Obtain my ship count for ships on a planet.
-  int MyPlanetShipCount() const;
+  int MyPlanetShipCount(int PlanetID) const;
 
   // Obtain my ship count in fleets.
   int MyFleetShipCount() const;
@@ -28,7 +26,7 @@ class Simulator {
   int EnemyShipCount() const;
   
   // Total enemy planet ship count.
-  int EnemyPlanetShipCount() const;
+  int EnemyPlanetShipCount(int PlanetID) const;
   
   // Total enemy fleet ship count.
   int EnemyFleetShipCount() const;
@@ -43,22 +41,61 @@ class Simulator {
   int NeutralPlanetCount() const;
 
   // Value of a Planet
-  int ValueOfPlanet() const;
-  // distance
+  int ValueOfPlanet(int PlanetID) const;
+
+  // Count of my ships enroute to planet.
+  int MyShipsEnroute(int PlanetID) const;
+
+  // Count of enemy ships enroute to planet.
+  int EnemyShipsEnroute(int PlanetID) const;
+
+  // vector of fleets enroute
+
+  // Average shipcount per planet
+  int MyAverageShipCountPerPlanet() const;
+
+  // Enemy Average shipcount per planet.
+  int EnemyAverageShipCountPerPlanet() const;
+
+  //**********************************
+  // Worth of a planet
+  int ValueOfNearbyPlanet(int PlanetID, int PlanetID) const;
+
+  // Worth of a planet
+  int ValueOfPlanet(int PlanetID) const;
+
+  // Do I have enough ships to invade?
+  bool MyInvadable(int PlanetID) const;
+  
+  // Does the Enemy have enough ships to invade?
+  bool EnemyInvadable(int PlanetID) const; 
+
   // how many ships does the planet have
+  int ShipsOnPlanet(int PlanetID) const;
+
   // Am I winning or loosing?
   // Is it close to an enemy planet?
-  // Do I have enough ships to invate it. 
+  // Do I have enough ships to invade it? 
   
   // Defend a planet.
-  void DefendPlanet() const;
+  void DefendPlanet(int PlanetID) const;
 
   // Create a pool of planets to send from
   void DeployPool() const;
 
+  // Move ships
+  void MoveShips(int PlanetID, int PlanetID);
+
+  // Expected status state
+  int ExpectedStatus(int PlanetID, int turns);
+
+
   // SIMULATIONS
   void State(int turn);
   
+  
+
+
  private:
 
 #endif
